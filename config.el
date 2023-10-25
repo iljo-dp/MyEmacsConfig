@@ -164,6 +164,12 @@
 (display-line-numbers-mode
 (setq display-line-numbers-type 'relative))
 
+(use-package sudo-edit
+  :config
+    (iljo/leader-keys
+      "fu" '(sudo-edit-find-file :wk "Sudo find file")
+      "fU" '(sudo-edit :wk "Sudo edit file")))
+
 (use-package which-key
 :init
    (which-key-mode 1)
