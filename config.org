@@ -5,7 +5,7 @@ R+TITLE: Iljo's GNU emacs config(based on DT's serie)
 #+OPTIONS: toc:2
 
 * OVERZICHTS tabel :toc:
-- [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
+- [[#important-programs-to-load-first][Important PROGRAMS TO LOAD FIRST]]
   - [[#package-managerelpaca][Package Manager(Elpaca?)]]
   - [[#inladen-evil-mode][Inladen Evil Mode]]
 - [[#algemene-keybinds][Algemene keybinds]]
@@ -18,18 +18,18 @@ R+TITLE: Iljo's GNU emacs config(based on DT's serie)
 - [[#emacs-gui][EMACS GUI]]
   - [[#enkele-aanpassingen-maken-om-niet-gebruikte-emacs-settings-qua-gui-uit-te-zetten][Enkele aanpassingen maken om niet gebruikte emacs settings qua gui uit te zetten.]]
   - [[#lijnen-voor-de-code][Lijnen voor de code.]]
-- [[#sudo-edit][SUDO EDIT]]
-- [[#which-key][WHICH-KEY]]
 - [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#org-mode][ORG MODE]]
   - [[#een-context-tabel-aanschaffen][Een context tabel aanschaffen]]
   - [[#org-bullets-aanzetten][Org-bullets aanzetten]]
   - [[#electric-ident-uitzetten-in-emacs][Electric-ident uitzetten in Emacs]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
-- [[#theme][THEME]]
 - [[#rainbow-mode][RAINBOW MODE]]
+- [[#sudo-edit][SUDO EDIT]]
+- [[#theme][THEME]]
+- [[#which-key][WHICH-KEY]]
 
-* IMPORTANT PROGRAMS TO LOAD FIRST
+* Important PROGRAMS TO LOAD FIRST
 ** Package Manager(Elpaca?)
 #+begin_src emacs-lisp
 (defvar elpaca-installer-version 0.5)
@@ -333,36 +333,6 @@ En ctrl en muis werkt nu ook.
   (display-line-numbers-mode
   (setq display-line-numbers-type 'relative))
 #+end_src
-* SUDO EDIT
--*sudo-edit*- Geeft ons de kracht om files te openen met sudo in emacs, of een file opnieuw te openen in een sudo buffer
-#+begin_src emacs-lisp
-(use-package sudo-edit
-  :config
-    (iljo/leader-keys
-      "fu" '(sudo-edit-find-file :wk "Sudo find file")
-      "fU" '(sudo-edit :wk "Sudo edit file")))
-#+end_src
-
-* WHICH-KEY
-#+begin_src emacs-lisp
-    (use-package which-key
-    :init
-       (which-key-mode 1)
-    :config
-    (setq which-key-side-window-location 'bottom
-            which-key-sort-order #'which-key-key-order-alpha
-	    which-key-sort-uppercase-first nil
-	    which-key-add-column-padding 1
-	    which-key-max-display-columns nil
-	    which-key-min-display-lines 6
-	    which-key-side-window-slot -10
-	    which-key-side-window-max-height 0.25
-	    which-key-idle-delay 0.8
-	    which-key-max-description-length 25
-	    which-key-allow-imprecise-window-fit t
-	    which-key-separator " → " ))
-
-#+end_src
 * IVY (COUNSEL)
 + Ivy, het generieke completion framework van Emacs
 + Counsel, een verzameling van Ivy-enhanced versies van common Emacs
@@ -402,6 +372,7 @@ En ctrl en muis werkt nu ook.
                                  'ivy-rich-switch-buffer-transformer))
 
 #+end_src
+
 
 * ORG MODE
 ** Een context tabel aanschaffen
@@ -446,6 +417,25 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 (require 'org-tempo)
 #+end_src
 
+
+* RAINBOW MODE
+Zorgt dat kleuren worden weergegeven als de kleur volgens hex. (#ffffff)
+#+begin_src emacs-lisp
+(use-package rainbow-mode
+  :hook 
+  ((org-mode prog-mode) . rainbow-mode))
+#+end_src
+
+* SUDO EDIT
+-*sudo-edit*- Geeft ons de kracht om files te openen met sudo in emacs, of een file opnieuw te openen in een sudo buffer
+#+begin_src emacs-lisp
+(use-package sudo-edit
+  :config
+    (iljo/leader-keys
+      "fu" '(sudo-edit-find-file :wk "Sudo find file")
+      "fU" '(sudo-edit :wk "Sudo edit file")))
+#+end_src
+
 * THEME
  Ik gebruik *dtmacs* gemaakt door DistroTube
 #+begin_src emacs-lisp
@@ -453,17 +443,27 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 (load-theme 'dtmacs t)
 #+end_src
 
+* WHICH-KEY
+#+begin_src emacs-lisp
+    (use-package which-key
+    :init
+       (which-key-mode 1)
+    :config
+    (setq which-key-side-window-location 'bottom
+            which-key-sort-order #'which-key-key-order-alpha
+	    which-key-sort-uppercase-first nil
+	    which-key-add-column-padding 1
+	    which-key-max-display-columns nil
+	    which-key-min-display-lines 6
+	    which-key-side-window-slot -10
+	    which-key-side-window-max-height 0.25
+	    which-key-idle-delay 0.8
+	    which-key-max-description-length 25
+	    which-key-allow-imprecise-window-fit t
+	    which-key-separator " → " ))
+
+#+end_src
 * COMMENT Github Copilot
 Hier probeer ik het nieuwste product van github. De *copilot* Dit is een AI based autocompletion framework? Ik snap het niet goed en ken het amper, maar ik wil het op zijn minst proberen. Misschien kan het helpen java boilerplate te genereren? Wie weet, ik niet!
  
 soon:tm:
-
-* RAINBOW MODE
-Display the actual color as a background for any hex color value (ex. #ffffff).  The code block below enables rainbow-mode in all programming modes (prog-mode) as well as org-mode, which is why rainbow works in this document.  
-
-#+begin_src emacs-lisp
-(use-package rainbow-mode
-  :hook 
-  ((org-mode prog-mode) . rainbow-mode))
-#+end_src
-
