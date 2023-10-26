@@ -4,32 +4,40 @@
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
-* OVERZICHTS tabel :toc:
-- [[#important-programs-to-load-first][Important PROGRAMS TO LOAD FIRST]]
+* TABLE OF CONTENTS :toc:
+- [[#important-programs-to-load-first][IMPORTANT Programs TO LOAD FIRST]]
   - [[#package-managerelpaca][Package Manager(Elpaca?)]]
-- [[#inladen-evil-mode][Inladen Evil Mode]]
+  - [[#inladen-evil-mode][Inladen Evil Mode]]
 - [[#algemene-keybinds][Algemene keybinds]]
   - [[#keybindings-gedaan-met-general][Keybindings gedaan met general]]
 - [[#all-the-icons][ALL THE ICONS]]
 - [[#buffer-move][BUFFER-MOVE]]
+- [[#company][COMPANY]]
+- [[#flycheck][FLYCHECK]]
 - [[#fonts][FONTS]]
   - [[#inzoemen-fixen-want-ik-ben-blind-asf][Inzoemen fixen, want ik ben blind asf]]
   - [[#de-fonts-niet-super-lelijk-makenleesbaar-deze-keer][De fonts niet super lelijk maken(leesbaar deze keer)]]
-- [[#emacs-gui][EMACS GUI]]
+- [[#emacs-qol-tweaks][EMACS QOL TWEAKS]]
   - [[#enkele-aanpassingen-maken-om-niet-gebruikte-emacs-settings-qua-gui-uit-te-zetten][Enkele aanpassingen maken om niet gebruikte emacs settings qua gui uit te zetten.]]
   - [[#lijnen-voor-de-code][Lijnen voor de code.]]
 - [[#ivy-counsel][IVY (COUNSEL)]]
+- [[#lsp-modeprogramming][LSP-MODE/programming]]
+  - [[#lsp-mode][LSP MODE]]
 - [[#org-mode][ORG MODE]]
   - [[#een-context-tabel-aanschaffen][Een context tabel aanschaffen]]
   - [[#org-bullets-aanzetten][Org-bullets aanzetten]]
-  - [[#electric-ident-uitzetten-in-emacs][Electric-ident uitzetten in Emacs]]
+  - [[#electric-tweaks][Electric tweaks]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
 - [[#rainbow-mode][RAINBOW MODE]]
+- [[#shells-and-terminals][SHELLS AND TERMINALS]]
+  - [[#eshell][Eshell]]
+  - [[#vterm][Vterm]]
+  - [[#vterm-toggle][Vterm-Toggle]]
 - [[#sudo-edit][SUDO EDIT]]
 - [[#theme][THEME]]
 - [[#which-key][WHICH-KEY]]
 
-* Important PROGRAMS TO LOAD FIRST
+* IMPORTANT Programs TO LOAD FIRST
 ** Package Manager(Elpaca?)
 #+begin_src emacs-lisp
 (defvar elpaca-installer-version 0.5)
@@ -86,7 +94,7 @@
   ;;(use-package general :demand t)
   ;;(elpaca-wait)
   #+end_src
-* Inladen Evil Mode
+** Inladen Evil Mode
   #+begin_src emacs-lisp
 
   ;; Expands to: (elpaca evil (use-package evil :demand t))
@@ -117,78 +125,81 @@
 * Algemene keybinds
 ** Keybindings gedaan met general
 #+begin_src emacs-lisp
-  (use-package general
-    :config
-    (general-evil-setup)
-    ;; Spacie als <leader>
-    (general-create-definer iljo/leader-keys
-      :states '(normal insert visual emacs)
-      :keymaps 'override
-      :prefix "SPC" ;; spacie
-      :global-prefix "M-SPC")
+    (use-package general
+      :config
+      (general-evil-setup)
+      ;; Spacie als <leader>
+      (general-create-definer iljo/leader-keys
+        :states '(normal insert visual emacs)
+        :keymaps 'override
+        :prefix "SPC" ;; spacie
+        :global-prefix "M-SPC")
 
-    (iljo/leader-keys
-      "." '(find-file :wk "Find file")
-      "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
-      "f r" '(counsel-recentf :wk "Find recent files")
-      "TAB TAB" '(comment-line :wk "Comment lines"))
+      (iljo/leader-keys
+        "." '(find-file :wk "Find file")
+        "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+        "f r" '(counsel-recentf :wk "Find recent files")
+        "TAB TAB" '(comment-line :wk "Comment lines"))
 
-    (iljo/leader-keys
-      "d" '(:ignore t :wk "Dired")
-      "d d" '(dired :wk "Open dired")
-      "d j" '(dired-jump :wk "Dired jump to current")
-      "d n" '(neotree-dir :wk "Open directory in neotree")
-      "d p" '(peep-dired :wk "Peep-dired"))
+      (iljo/leader-keys
+        "d" '(:ignore t :wk "Dired")
+        "d d" '(dired :wk "Open dired")
+        "d j" '(dired-jump :wk "Dired jump to current")
+        "d n" '(neotree-dir :wk "Open directory in neotree")
+        "d p" '(peep-dired :wk "Peep-dired"))
 
-    (iljo/leader-keys
-      "b" '(:ignore t :wk "buffer")
-      "b b" '(switch-to-buffer :wk "Switch buffer")
-      "b i" '(ibuffer :wk "Ibuffer")
-      "b k" '(kill-this-buffer :wk "Kill this buffer")
-      "b n" '(next-buffer :wk "Next buffer")
-      "b p" '(previous-buffer :wk "Previous buffer")
-      "b r" '(revert-buffer :wk "Reload buffer"))
+      (iljo/leader-keys
+        "b" '(:ignore t :wk "buffer")
+        "b b" '(switch-to-buffer :wk "Switch buffer")
+        "b i" '(ibuffer :wk "Ibuffer")
+        "b k" '(kill-this-buffer :wk "Kill this buffer")
+        "b n" '(next-buffer :wk "Next buffer")
+        "b p" '(previous-buffer :wk "Previous buffer")
+        "b r" '(revert-buffer :wk "Reload buffer"))
 
-    (iljo/leader-keys
-     "e" '(:ignore t :wk "Evaluate")    
-     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-     "e d" '(eval-defun :wk "Evaluate defun containing or after point")
-     "e e" '(eval-expression :wk "Evaluate and elisp expression")
-     "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
-     "e r" '(eval-region :wk "Evaluate elisp in region"))
+      (iljo/leader-keys
+       "e" '(:ignore t :wk "Evaluate/Eshell")    
+       "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+       "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+       "e e" '(eval-expression :wk "Evaluate and elisp expression")
+       "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+       "e r" '(eval-region :wk "Evaluate elisp in region")
+       "e s" '(eshell :which-key "Eshell")
+       "e h" '(counsel-esh-history :which-key "Eshell history"))
 
-   (iljo/leader-keys
-    "h" '(:ignore t :wk "Help")
-    "h f" '(describe-function :wk "Describe function")
-    "h v" '(describe-variable :wk "Describe variable")
-    "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
+     (iljo/leader-keys
+      "h" '(:ignore t :wk "Help")
+      "h f" '(describe-function :wk "Describe function")
+      "h v" '(describe-variable :wk "Describe variable")
+      "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
 
-   (iljo/leader-keys
-    "t" '(:ignore t :wk "Toggle")
-    "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-    "t t" '(visual-line-mode :wk "Toggle truncated lines"))
-  
-(iljo/leader-keys
-    "w" '(:ignore t :wk "Windows")
-    ;; Window splits
-    "w c" '(evil-window-delete :wk "Close window")
-    "w n" '(evil-window-new :wk "New window")
-    "w s" '(evil-window-split :wk "Horizontal split window")
-    "w v" '(evil-window-vsplit :wk "Vertical split window")
-    ;; Window motions
-    "w h" '(evil-window-left :wk "Window left")
-    "w j" '(evil-window-down :wk "Window down")
-    "w k" '(evil-window-up :wk "Window up")
-    "w l" '(evil-window-right :wk "Window right")
-    "w w" '(evil-window-next :wk "Goto next window")
-    ;; Move Windows
-    "w H" '(buf-move-left :wk "Buffer move left")
-    "w J" '(buf-move-down :wk "Buffer move down")
-    "w K" '(buf-move-up :wk "Buffer move up")
-    "w L" '(buf-move-right :wk "Buffer move right"))
+     (iljo/leader-keys
+      "t" '(:ignore t :wk "Toggle")
+      "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+      "t t" '(visual-line-mode :wk "Toggle truncated lines")
+      "t v" '(vterm-toggle :wk "Toggle vterm"))
+
+  (iljo/leader-keys
+      "w" '(:ignore t :wk "Windows")
+      ;; Window splits
+      "w c" '(evil-window-delete :wk "Close window")
+      "w n" '(evil-window-new :wk "New window")
+      "w s" '(evil-window-split :wk "Horizontal split window")
+      "w v" '(evil-window-vsplit :wk "Vertical split window")
+      ;; Window motions
+      "w h" '(evil-window-left :wk "Window left")
+      "w j" '(evil-window-down :wk "Window down")
+      "w k" '(evil-window-up :wk "Window up")
+      "w l" '(evil-window-right :wk "Window right")
+      "w w" '(evil-window-next :wk "Goto next window")
+      ;; Move Windows
+      "w H" '(buf-move-left :wk "Buffer move left")
+      "w J" '(buf-move-down :wk "Buffer move down")
+      "w K" '(buf-move-up :wk "Buffer move up")
+      "w L" '(buf-move-right :wk "Buffer move right"))
 
 
-  )
+    )
 #+end_src
 
 * ALL THE ICONS
@@ -276,7 +287,26 @@ one, an error is signaled."
       (set-window-buffer other-win buf-this-buf)
       (select-window other-win))))
 #+end_src
-
+* COMPANY
+#+begin_src emacs-lisp
+(use-package company
+  :diminish company-mode
+  :hook (prog-mode . company-mode)
+  :config
+  (setq company-minimum-prefix-length 1
+        company-idle-delay 0.1
+        company-selection-wrap-around t
+        company-tooltip-align-annotations t
+        company-frontends '(company-pseudo-tooltip-frontend ; show tooltip even for single candidate
+                            company-echo-metadata-frontend))
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous))
+#+end_src
+* FLYCHECK
+Spellchecker
+#+begin_src emacs-lisp
+(use-package flycheck :config (global-flycheck-mode +1))
+#+end_src
 * FONTS
 ** Inzoemen fixen, want ik ben blind asf
 Inzoemen werkt hier vanaf nu met control plus =/- om in/uit te zoemen
@@ -317,7 +347,7 @@ En ctrl en muis werkt nu ook.
 #+end_src
 
 
-* EMACS GUI
+* EMACS QOL TWEAKS 
 ** Enkele aanpassingen maken om niet gebruikte emacs settings qua gui uit te zetten.
 #+begin_src emacs-lisp
 (menu-bar-mode -1)
@@ -371,8 +401,56 @@ En ctrl en muis werkt nu ook.
                                  'ivy-rich-switch-buffer-transformer))
 
 #+end_src
+* LSP-MODE/programming
+** LSP MODE
+This is to make emacs and lsp and actually code with it
+#+begin_src emacs-lisp
+    (use-package lsp-java
+      :after lsp)
+  (use-package web-mode
+     :after lsp)
+  (use-package lsp-ui
+    :commands lsp-ui-mode
+    :config
+    (setq lsp-ui-doc-enable nil)
+    (setq lsp-ui-doc-header t)
+    (setq lsp-ui-doc-include-signature t)
+    (setq lsp-ui-doc-border (face-foreground 'default))
+    (setq lsp-ui-sideline-show-code-actions t)
+    (setq lsp-ui-sideline-delay 0.05))
 
-
+      (use-package lsp-mode
+        :hook ((c-mode          ; clangd
+                c++-mode        ; clangd
+                c-or-c++-mode   ; clangd
+                java-mode       ; eclipse-jdtls
+                js-mode         ; ts-ls (tsserver wrapper)
+                js-jsx-mode     ; ts-ls (tsserver wrapper)
+                typescript-mode ; ts-ls (tsserver wrapper)
+                python-mode     ; pyright
+                web-mode        ; ts-ls/HTML/CSS
+                haskell-mode    ; haskell-language-server
+                ) . lsp-deferred)
+        :commands lsp
+        :config
+        (setq lsp-auto-guess-root t)
+        (setq lsp-log-io nil)
+        (setq lsp-restart 'auto-restart)
+        (setq lsp-enable-symbol-highlighting nil)
+        (setq lsp-enable-on-type-formatting nil)
+        (setq lsp-signature-auto-activate nil)
+        (setq lsp-signature-render-documentation nil)
+        (setq lsp-eldoc-hook nil)
+        (setq lsp-modeline-code-actions-enable nil)
+        (setq lsp-modeline-diagnostics-enable nil)
+        (setq lsp-headerline-breadcrumb-enable nil)
+        (setq lsp-semantic-tokens-enable nil)
+        (setq lsp-enable-folding nil)
+        (setq lsp-enable-imenu nil)
+        (setq lsp-enable-snippet nil)
+        (setq read-process-output-max (* 1024 1024)) ;; 1MB
+        (setq lsp-idle-delay 0.5))
+#+end_src
 * ORG MODE
 ** Een context tabel aanschaffen
 #+begin_src emacs-lisp
@@ -389,7 +467,7 @@ Dit zorgt ervoor dat org mode niet lelijk is tbf.
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+end_src
 
-** Electric-ident uitzetten in Emacs
+** Electric tweaks
 - Orgmode source blocks hebben meestal enorm rare en vreemde code indentatie, want mij irriteerd en tegenwerkt. Dus deze zetten we bij deze uit.
   #+begin_src emacs-lisp
   (electric-indent-mode -1)
@@ -423,6 +501,56 @@ Zorgt dat kleuren worden weergegeven als de kleur volgens hex. (#ffffff)
 (use-package rainbow-mode
   :hook 
   ((org-mode prog-mode) . rainbow-mode))
+#+end_src
+* SHELLS AND TERMINALS
+
+** Eshell
+Shell geschreven in emacs-lisp
+#+begin_src emacs-lisp
+  (use-package eshell-syntax-highlighting
+    :after esh-mode
+    :config
+    (eshell-syntax-highlighting-global-mode +1))
+  
+  (setq eshell-rc-script (concat user-emacs-directory "eshell/profile")
+        eshell-aliases-file (concat user-emacs-directory "eshell/aliases")
+        eshell-history-size 5000
+        eshell-buffer-maximum-lines 5000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t
+        eshell-destroy-buffer-when-process-dies t
+        eshell-visual-commands'("zsh" "bash" "htop" "ssh" "top" "zsh"))
+#+end_src
+
+** Vterm
+Terminal-emulator die in emacs zelf werkt. 
+#+begin_src emacs-lisp
+(use-package vterm
+:config
+(setq shell-file-name "/bin/zsh"
+      vterm-max-scrollback 5000))
+#+end_src
+** Vterm-Toggle
+Toggled tussen onze buffer en de Vterm
+#+begin_src emacs-lisp
+(use-package vterm-toggle
+  :after vterm
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (setq vterm-toggle-scope 'project)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                  (display-buffer-reuse-window display-buffer-at-bottom)
+                  ;;(display-buffer-reuse-window display-buffer-in-direction)
+                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                  ;;(direction . bottom)
+                  ;;(dedicated . t) ;dedicated is supported in emacs27
+                  (reusable-frames . visible)
+                  (window-height . 0.3))))
 #+end_src
 
 * SUDO EDIT
