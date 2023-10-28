@@ -1,24 +1,25 @@
-#+TITLE: DT's GNU Emacs Config
-#+AUTHOR: Derek Taylor (DT)
-#+DESCRIPTION: DT's personal Emacs config.
+#+TITLE: Iljo's GNU emacs config
+#+AUTHOR: Iljo De Poorter
+#+DESCRIPTION: Iljo's emacs config, based on dt's
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
-- [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
-  - [[#adding-the-scripts-directory-to-path][Adding the scripts directory to path]]
-  - [[#sourcing-the-scripts][Sourcing the scripts]]
+- [[#belangerijke-dingen-die-we-eerst-moeten-inladen][Belangerijke dingen die we eerst moeten inladen]]
+  - [[#de-scripts-toevoegen][De scripts toevoegen]]
+  - [[#sourcen-van-de-scripts][Sourcen van de scripts]]
 - [[#all-the-icons][ALL THE ICONS]]
-- [[#backup][BACKUP]]
+- [[#remove-the-backups][Remove the backups]]
 - [[#company][COMPANY]]
-- [[#dashboard][DASHBOARD]]
-- [[#diminish][DIMINISH]]
-- [[#eradio][ERADIO]]
-- [[#evil][EVIL]]
-- [[#flycheck][FLYCHECK]]
+- [[#gui-tweaks][GUI TWEAKS]]
+  - [[#dashboard][DASHBOARD]]
+  - [[#diminish-modes][DIMINISH modes]]
 - [[#fonts][FONTS]]
   - [[#setting-the-font-face][Setting the Font Face]]
   - [[#zooming-inout][Zooming In/Out]]
+- [[#eradio][ERADIO]]
+- [[#evil][EVIL]]
+- [[#flycheck][FLYCHECK]]
 - [[#general-keybindings][GENERAL KEYBINDINGS]]
 - [[#highlight-todo][HIGHLIGHT TODO]]
 - [[#ivy-counsel][IVY (COUNSEL)]]
@@ -47,23 +48,22 @@
 - [[#transparency][TRANSPARENCY]]
 - [[#which-key][WHICH-KEY]]
 
-* IMPORTANT PROGRAMS TO LOAD FIRST
-To keep this =config.org= a reasonable length, I have moved a lot of code to individual scripts that will be sourced by this config.  These scripts are found in "~/.config/emacs/scripts" and do not contain any code that most people are likely to need to edit.
+* Belangerijke dingen die we eerst moeten inladen
+Om mijn emacs config niet gigantisch lang te maken heb ik sommige scripts gestoken in de scripts folder in de root emacs diretory.
 
-** Adding the scripts directory to path
+** De scripts toevoegen
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.config/emacs/scripts/")
 #+end_src
 
-** Sourcing the scripts
+** Sourcen van de scripts
 #+begin_src emacs-lisp
 (require 'elpaca-setup)  ;; The Elpaca Package Manager
 (require 'buffer-move)   ;; Buffer-move for better window management
 #+end_src
 
 * ALL THE ICONS
-This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
-  
+ Icon set voor alles emacs 
 #+begin_src emacs-lisp
 (use-package all-the-icons
   :ensure t
@@ -73,17 +73,15 @@ This is an icon set that can be used with dashboard, dired, ibuffer and other Em
   :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 #+end_src
 
-* BACKUP 
-By default, Emacs creates automatic backups of files in their original directories, such "file.el" and the backup "file.el~".  This leads to a lot of clutter, so let's tell Emacs to put all backups that it creates in the =TRASH= directory.
+* Remove the backups 
+ipv alle ~config.org~ files op te slaan in de emacs directory en deze dan vol te zetten met rommel verwijderen we deze
 
 #+begin_src emacs-lisp
 (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
-
 #+end_src
 
 * COMPANY
-[[https://company-mode.github.io/][Company]] is a text completion framework for Emacs. The name stands for "complete anything".  Completion will start automatically after you type a few letters. Use M-n and M-p to select, <return> to complete or <tab> to complete the common part.
-
+[[https://company-mode.github.io/][Company]] is een text completion framework, company betekend complete anything.
 #+begin_src emacs-lisp
 (use-package company
   :defer 2
@@ -102,8 +100,9 @@ By default, Emacs creates automatic backups of files in their original directori
   :hook (company-mode . company-box-mode))
 #+end_src
 
-* DASHBOARD
-Emacs Dashboard is an extensible startup screen showing you recent files, bookmarks, agenda items and an Emacs banner.
+* GUI TWEAKS
+** DASHBOARD
+Het dashbord dat je krijgt als je GNU emacs opstart, met allerlij info die handig zijn als je het progrmama opent.
 
 #+begin_src emacs-lisp
 (use-package dashboard
@@ -113,7 +112,6 @@ Emacs Dashboard is an extensible startup screen showing you recent files, bookma
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-banner-logo-title "The one true EMACS ~ vanilla")
-  ;;(setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
   (setq dashboard-startup-banner "~/.config/emacs/images/emacs.png")  ;; use custom image as banner 
   (setq dashboard-center-content nil) ;; set to 't' for centered content
   (setq dashboard-items '((recents . 5)
@@ -129,92 +127,11 @@ Emacs Dashboard is an extensible startup screen showing you recent files, bookma
 
 #+end_src
 
-* DIMINISH
-This package implements hiding or abbreviation of the modeline displays (lighters) of minor-modes.  With this package installed, you can add ':diminish' to any use-package block to hide that particular mode in the modeline.
+** DIMINISH modes
+Deze package zorgt ervoor dat "minor-modes" niet getoond worden in emacs en clutter veroorzaken
 
 #+begin_src emacs-lisp
 (use-package diminish)
-
-#+end_src
-
-* ERADIO
-[[https://github.com/olavfosse/eradio][eradio]] is a simple Internet radio player for Emacs.  It uses 'vlc as its backend by default, but you can change the =eradio-player= variable to use another multimedia player.  I have set eradio to use 'mpv' instead of 'vlc' because it supports more types of Internet radio streams.
-
-#+begin_src emacs-lisp
-(use-package eradio
-  :init
-  (setq eradio-player '("mpv" "--no-video" "--no-terminal"))
-  :config
-  (setq eradio-channels '(("Totally 80s FM" . "https://zeno.fm/radio/totally-80s-fm/")
-                          ("Oldies Radio 50s-60s" . "https://zeno.fm/radio/oldies-radio-50s-60s/")
-                          ("Oldies Radio 70s" . "https://zeno.fm/radio/oldies-radio-70s/")
-                          ("Unlimited 80s" . "https://zeno.fm/radio/unlimited80s/")
-                          ("80s Hits" . "https://zeno.fm/radio/80shits/")
-                          ("90s Hits" . "https://zeno.fm/radio/90s_HITS/")
-			    ("defcon channel" . "https://somafm.com/defcon256.pls") 
-                          ("2000s Pop" . "https://zeno.fm/radio/2000s-pop/")
-                          ("The 2000s" . "https://zeno.fm/radio/the-2000s/")
-                          ("Hits 2010s" . "https://zeno.fm/radio/helia-hits-2010/")
-                          ("Classical Radio" . "https://zeno.fm/radio/classical-radio/")
-                          ("Classical Relaxation" . "https://zeno.fm/radio/radio-christmas-non-stop-classical/")
-                          ("Classic Rock" . "https://zeno.fm/radio/classic-rockdnb2sav8qs8uv/")
-                          ("Gangsta49" . "https://zeno.fm/radio/gangsta49/")
-                          ("HipHop49" . "https://zeno.fm/radio/hiphop49/")
-                          ("Madhouse Country Radio" . "https://zeno.fm/radio/madhouse-country-radio/")
-                          ("PopMusic" . "https://zeno.fm/radio/popmusic74vyurvmug0uv/")
-                          ("PopStars" . "https://zeno.fm/radio/popstars/")
-                          ("RadioMetal" . "https://zeno.fm/radio/radio-metal/")
-                          ("RocknRoll Radio" . "https://zeno.fm/radio/rocknroll-radio994c7517qs8uv/"))))
-#+end_src
-
-#+RESULTS:
-
-* EVIL
-[[https://github.com/emacs-evil/evil][Evil]] is an extensible vi/vim layer for Emacs.  Because...let's face it.  The Vim keybindings are just plain better.
-
-#+begin_src emacs-lisp
-;; Expands to: (elpaca evil (use-package evil :demand t))
-(use-package evil
-    :init      ;; tweak evil's configuration before loading it
-    (setq evil-want-integration t  ;; This is optional since it's already set to t by default.
-          evil-want-keybinding nil
-          evil-vsplit-window-right t
-          evil-split-window-below t
-          evil-undo-system 'undo-redo)  ;; Adds vim-like C-r redo functionality
-    (evil-mode))
-
-(use-package evil-collection
-  :after evil
-  :config
-  ;; Do not uncomment this unless you want to specify each and every mode
-  ;; that evil-collection should works with.  The following line is here 
-  ;; for documentation purposes in case you need it.  
-  ;; (setq evil-collection-mode-list '(calendar dashboard dired ediff info magit ibuffer))
-  (add-to-list 'evil-collection-mode-list 'help) ;; evilify help mode
-  (evil-collection-init))
-
-(use-package evil-tutor)
-
-;; Using RETURN to follow links in Org/Evil 
-;; Unmap keys in 'evil-maps if not done, (setq org-return-follows-link t) will not work
-(with-eval-after-load 'evil-maps
-  (define-key evil-motion-state-map (kbd "SPC") nil)
-  (define-key evil-motion-state-map (kbd "RET") nil)
-  (define-key evil-motion-state-map (kbd "TAB") nil))
-;; Setting RETURN key in org-mode to follow links
-  (setq org-return-follows-link  t)
-
-#+end_src
-
-* FLYCHECK
-Install =luacheck= from your Linux distro's repositories for flycheck to work correctly with lua files.  Install =python-pylint= for flycheck to work with python files.  Haskell works with flycheck as long as =haskell-ghc= or =haskell-stack-ghc= is installed.  For more information on language support for flycheck, [[https://www.flycheck.org/en/latest/languages.html][read this]].
-
-#+begin_src emacs-lisp
-(use-package flycheck
-  :ensure t
-  :defer t
-  :diminish
-  :init (global-flycheck-mode))
 
 #+end_src
 
@@ -261,6 +178,88 @@ You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTR
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+#+end_src
+
+
+* ERADIO
+Dit is gewoon letterlijk een radio player voor de emacs client, zo kan je internet radio luisteren terwijl je werkt, in EMACS.
+
+#+begin_src emacs-lisp
+(use-package eradio
+  :init
+  (setq eradio-player '("mpv" "--no-video" "--no-terminal"))
+  :config
+  (setq eradio-channels '(("Totally 80s FM" . "https://zeno.fm/radio/totally-80s-fm/")
+                          ("Oldies Radio 50s-60s" . "https://zeno.fm/radio/oldies-radio-50s-60s/")
+                          ("Oldies Radio 70s" . "https://zeno.fm/radio/oldies-radio-70s/")
+                          ("Unlimited 80s" . "https://zeno.fm/radio/unlimited80s/")
+                          ("80s Hits" . "https://zeno.fm/radio/80shits/")
+                          ("90s Hits" . "https://zeno.fm/radio/90s_HITS/")
+			    ("defcon channel" . "https://somafm.com/defcon256.pls") 
+                          ("2000s Pop" . "https://zeno.fm/radio/2000s-pop/")
+                          ("The 2000s" . "https://zeno.fm/radio/the-2000s/")
+                          ("Hits 2010s" . "https://zeno.fm/radio/helia-hits-2010/")
+                          ("Classical Radio" . "https://zeno.fm/radio/classical-radio/")
+                          ("Classical Relaxation" . "https://zeno.fm/radio/radio-christmas-non-stop-classical/")
+                          ("Classic Rock" . "https://zeno.fm/radio/classic-rockdnb2sav8qs8uv/")
+                          ("Gangsta49" . "https://zeno.fm/radio/gangsta49/")
+                          ("HipHop49" . "https://zeno.fm/radio/hiphop49/")
+                          ("Madhouse Country Radio" . "https://zeno.fm/radio/madhouse-country-radio/")
+                          ("PopMusic" . "https://zeno.fm/radio/popmusic74vyurvmug0uv/")
+                          ("PopStars" . "https://zeno.fm/radio/popstars/")
+                          ("RadioMetal" . "https://zeno.fm/radio/radio-metal/")
+                          ("RocknRoll Radio" . "https://zeno.fm/radio/rocknroll-radio994c7517qs8uv/"))))
+#+end_src
+
+#+RESULTS:
+
+* EVIL
+[[https://github.com/emacs-evil/evil][Evil]] is een uitrbreidbare vi/vim laag voor Emacs. Want vim keybinds zijn beter dan de default emacs binds.
+
+#+begin_src emacs-lisp
+;; Expands to: (elpaca evil (use-package evil :demand t))
+(use-package evil
+    :init      ;; tweak evil's configuration before loading it
+    (setq evil-want-integration t  ;; This is optional since it's already set to t by default.
+          evil-want-keybinding nil
+          evil-vsplit-window-right t
+          evil-split-window-below t
+          evil-undo-system 'undo-redo)  ;; Adds vim-like C-r redo functionality
+    (evil-mode))
+
+(use-package evil-collection
+  :after evil
+  :config
+  ;; Do not uncomment this unless you want to specify each and every mode
+  ;; that evil-collection should works with.  The following line is here 
+  ;; for documentation purposes in case you need it.  
+  ;; (setq evil-collection-mode-list '(calendar dashboard dired ediff info magit ibuffer))
+  (add-to-list 'evil-collection-mode-list 'help) ;; evilify help mode
+  (evil-collection-init))
+
+(use-package evil-tutor)
+
+;; Using RETURN to follow links in Org/Evil 
+;; Unmap keys in 'evil-maps if not done, (setq org-return-follows-link t) will not work
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "SPC") nil)
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-motion-state-map (kbd "TAB") nil))
+;; Setting RETURN key in org-mode to follow links
+  (setq org-return-follows-link  t)
+
+#+end_src
+
+* FLYCHECK
+Install =luacheck= from your Linux distro's repositories for flycheck to work correctly with lua files.  Install =python-pylint= for flycheck to work with python files.  Haskell works with flycheck as long as =haskell-ghc= or =haskell-stack-ghc= is installed.  For more information on language support for flycheck, [[https://www.flycheck.org/en/latest/languages.html][read this]].
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :defer t
+  :diminish
+  :init (global-flycheck-mode))
+
 #+end_src
 
 * GENERAL KEYBINDINGS
